@@ -12,8 +12,7 @@ public class ParallaxLayer : MonoBehaviour {
         lastPosition = Camera.main.transform.position;
     }
 
-    void LateUpdate()
-    {
+    void LateUpdate() {
         Vector3 new_position = Camera.main.transform.position;
         Vector3 diff = new_position - lastPosition;
         lastPosition = new_position;
