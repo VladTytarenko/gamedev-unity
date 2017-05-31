@@ -21,4 +21,9 @@ public class LevelController : MonoBehaviour {
         rabit.transform.position = this.startingPosition; 
     }
 
+    public void addCoins(int number){}
+
+    public void addFruit(int number) {}
+
+    public void addCristal(int number) {}
 }

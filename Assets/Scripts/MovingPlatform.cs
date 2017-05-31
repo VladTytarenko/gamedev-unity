@@ -2,29 +2,59 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovingPlatform : MonoBehaviour {
-
-    public float spacing = 1.92f;
-    public float num = 3f;
-    float direction = 1;
-    float minX, maxX;
-
-    void Start () {
-        minX = transform.position.x;
-        maxX = minX + num * spacing;
+public class MovingPlatform : MonoBehaviour
+{
+    public Vector3 MoveBy;
+    Vector3 pointA;
+    Vector3 pointB;
+    public float waitTime = 3.5f;
+    public float Speed = 2f;
+    bool isMovingToA = false;
+    float to_wait = 0;
+   
+    void Start()
+    {
+        this.pointA = this.transform.position;
+        this.pointB = this.pointA + MoveBy;
     }
 
-    void Update () {
-        Vector3 currPos = transform.position;
-        if (currPos.x >= maxX) {
-            direction = -1;
-        }
-        if (currPos.x <= minX) {
-            direction = 1;
-        }
-        //time_to_wait -= Time.deltaTime;
-        //if (time_to_wait <= 0)
-        transform.Translate(new Vector3(direction * 5f * Time.deltaTime, 0, 0));
+    bool isArrived(Vector3 pos, Vector3 target)
+    {
+        pos.z = 0;
+        target.z = 0;
+        return Vector3.Distance(pos, target) <= 0.2f;
     }
 
+    void Update()
+    {
+        to_wait -= Time.deltaTime;
+        if (to_wait <= 0)
+        {
+            Vector3 target;
+            if (isMovingToA)
+            {
+                target = this.pointA;
+            }
+            else
+            {
+                target = this.pointB;
+            }
+            Vector3 myPosition = this.transform.position;
+            if (isArrived(target, myPosition))
+            {
+                isMovingToA = !isMovingToA;
+                to_wait = this.waitTime;
+            }
+            else
+            {
+                Vector3 destionnation = target - myPosition;
+                float move = this.Speed * Time.deltaTime;
+                float distance = Vector3.Distance(destionnation, myPosition);
+                Vector3 move_vector = destionnation.normalized * Mathf.Min(move, distance);
+                this.transform.position += move_vector;
+
+            }
+        }
+
+    }
 }
