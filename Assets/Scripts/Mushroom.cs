@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Mushroom : Collectable
 {
-    protected override void OnRabitHit(HeroRabit rabit)
+    protected override void hitting(HeroRabit rabit)
     {
         rabit.becomeSuper();
         this.CollectedHide();

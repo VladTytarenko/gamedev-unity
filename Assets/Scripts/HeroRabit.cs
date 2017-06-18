@@ -1,342 +1,126 @@
-﻿/*using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-
-public class HeroRabit : MonoBehaviour {
-
-    public float speed = 1;
-    Rigidbody2D myBody = null;
-    bool isGrounded = false;
-    bool JumpActive = false;
-    float JumpTime = 0f;
-    public float MaxJumpTime = 2f;
-    public float JumpSpeed = 2f;
-    Transform RabbitParent = null;
-    public int MaxHealth = 2;
-    int health = 1;
-    bool isSuper = false;
-
-	// Use this for initialization
-	void Start () {
-        myBody = this.GetComponent<Rigidbody2D>();
-        LevelController.current.setStartPosition(this.transform.position);
-        RabbitParent = this.transform.parent;
-	}
-
-    void FixedUpdate () {
-        /*Vector3 from = transform.position + Vector3.up * 0.3f;
-        Vector3 to = transform.position + Vector3.down * 0.1f;
-        int layer_id = 1 << LayerMask.NameToLayer("Ground");
-        RaycastHit2D hit = Physics2D.Linecast(from, to, layer_id);
-
-        if (hit)
-        {
-            isGrounded = true;
-        } else {
-            isGrounded = false;
-        }
-        Debug.DrawLine(from, to, Color.red);
-
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            this.JumpActive = true;
-        }
-
-        if (this.JumpActive)
-        {
-            if (Input.GetButton("Jump"))
-            {
-                this.JumpTime += Time.deltaTime;
-                if (this.JumpTime < this.MaxJumpTime)
-                {
-                    Vector2 vel = myBody.velocity;
-                    vel.y = JumpSpeed * (1.0f - JumpTime / MaxJumpTime);
-                    myBody.velocity = vel;
-                }
-            } else {
-                this.JumpActive = false;
-                this.JumpTime = 0;
-            }
-        }
-
-        float value = Input.GetAxis("Horizontal");
-        Animator animator = GetComponent<Animator>();
-        if (Mathf.Abs(value) > 0)
-        {
-            Vector2 vel = myBody.velocity;
-            vel.x = value * speed;
-            myBody.velocity = vel;
-            animator.SetBool("run", true);
-        } else {
-            animator.SetBool("run", false);
-        }
-
-        if (this.isGrounded)
-        {
-            animator.SetBool("jump", false);
-        } else {
-            animator.SetBool("jump", true);
-        }
-
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (value < 0)
-            sr.flipX = true;
-        else if (value > 0)
-            sr.flipX = false;
-        float val = Input.GetAxis("Horizontal");
-
-        SpriteRenderer spr = GetComponent<SpriteRenderer>();
-
-        Animator animator = GetComponent<Animator>();
-
-        if (Mathf.Abs(val) > 0)
-        {
-
-            Vector2 vec2 = myBody.velocity;
-
-            vec2.x = val * speed;
-
-            myBody.velocity = vec2;
-
-            animator.SetBool("run", true);
-
-        }
-        else
-        {
-
-            animator.SetBool("run", false);
-
-        }
-
-        if (val < 0)
-        {
-
-            spr.flipX = true;
-
-        }
-        else if (val > 0)
-        {
-
-            spr.flipX = false;
-
-        }
-
-        Vector3 from = transform.position + Vector3.up * 0.3f;
-
-        Vector3 to = transform.position + Vector3.down * 0.1f;
-
-        int layer_id = 1 << LayerMask.NameToLayer("Ground");
-
-        //Перевіряємо чи проходить лінія через Collider з шаром Ground
-
-        RaycastHit2D hit = Physics2D.Linecast(from, to, layer_id);
-
-        if (hit)
-        {
-
-            if (hit.transform != null && hit.transform.GetComponent<MovingPlatform>() != null)
-            {
-
-                SetNewParent(this.transform, hit.transform);
-
-            }
-            else
-            {
-
-                SetNewParent(this.transform, this.RabbitParent);
-
-            }
-
-            isGrounded = true;
-
-        }
-
-        else
-        {
-
-            isGrounded = false;
-
-        }
-
-        //Намалювати лінію (для розробника)
-
-        Debug.DrawLine(from, to, Color.red);
-
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-
-            this.JumpActive = true;
-
-        }
-
-        if (this.JumpActive)
-        {
-
-            //Якщо кнопку ще тримають
-
-            if (Input.GetButton("Jump"))
-            {
-
-                this.JumpTime += Time.deltaTime;
-
-                if (this.JumpTime < this.MaxJumpTime)
-                {
-
-                    Vector2 vel = myBody.velocity;
-
-                    vel.y = JumpSpeed * (1.0f - JumpTime / MaxJumpTime);
-
-                    myBody.velocity = vel;
-
-                }
-
-            }
-            else
-            {
-
-                this.JumpActive = false;
-
-                this.JumpTime = 0;
-
-            }
-
-        }
-
-        if (this.isGrounded)
-        {
-
-            animator.SetBool("jump", false);
-
-        }
-        else
-        {
-
-            animator.SetBool("jump", true);
-
-        }
-
-    }
-
-    static void SetNewParent(Transform obj, Transform new_parent)
-    {
-        if (obj.transform.parent != new_parent)
-        {
-            Vector3 pos = obj.transform.position;
-            obj.transform.parent = new_parent;
-            obj.transform.position = pos;
-        }
-    }
-
-    public void addHealth(int number)
-    {
-        this.health += number;
-        if (this.health > MaxHealth)
-            this.health = MaxHealth;
-        this.onHealthChange();
-    }
-
-    public void removeHealth(int number)
-    {
-        this.health -= number;
-        if (this.health < 0)
-            this.health = 0;
-        this.onHealthChange();
-    }
-
-    public void onHealthChange()
-    {
-        if (this.health == 1)
-        {
-            this.transform.localScale = Vector3.one;
-        }
-        else if (this.health == 2)
-        {
-            this.transform.localScale = Vector3.one * 2;
-            isSuper = true;
-        }
-        else if (this.health == 0)
-        {
-            LevelController.current.onRabitDeath(this);
-            isSuper = false;
-        }
-    }
-
-    public void becomeSuper()
-    {
-        if (!isSuper)
-        {
-            isSuper = true;
-            transform.localScale += new Vector3(0.5f, 0.5f, 0);
-        }
-    }
-
-    public void BombTouch()
-    {
-        Animator animator = GetComponent<Animator>();
-        if (isSuper)
-        {
-            isSuper = false;
-            transform.localScale += new Vector3(-0.5F, -0.5f, 0);
-        }
-        else
-        {
-            animator.SetBool("death", true);
-            LevelController.current.onRabitDeath(this);
-            animator.SetBool("death", false);
-
-        }
-    }
-}*/
-
-
-using System.Collections;
-using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class HeroRabit : MonoBehaviour
 {
+    public static HeroRabit currentRabit = null;
+    public float maxJumpTime = 2f;
+    public float jumpSpeed = 2f;
     public float speed = 1;
+    public int maxHealth = 2;
+    Transform rabitParent = null;
     Rigidbody2D body = null;
-    bool isGrounded = false;
-    bool JumpActive = false;
+    Animator animator;
     float JumpTime = 0f;
-    public float MaxJumpTime = 2f;
-    public float JumpSpeed = 2f;
-    Transform RabbitParent = null;
-    public int MaxHealth = 2;
-    int health = 1;
+    bool isGrounded = false;
+    bool jumpActive = false;
+    bool isRabitDie = false;
     bool isSuper = false;
-    // Use this for initialization
+    int health = 1;
+
+    //
+    public AudioClip groundSound;
+    AudioSource groundSource;
+    //
+
+    void Update() { }
+
+    static void SetNewParent(Transform obj, Transform new_parent)
+    {
+        if (new_parent != obj.transform.parent)
+        {
+            Vector3 position = obj.transform.position;
+            obj.transform.parent = new_parent;
+            obj.transform.position = position;
+        }
+    }
+
     void Start()
     {
         body = this.GetComponent<Rigidbody2D>();
-        RabbitParent = this.transform.parent;
+        animator = GetComponent<Animator>();
+        rabitParent = this.transform.parent;
         LevelController.current.setStartPosition(this.transform.position);
 
-    }
-    static void SetNewParent(Transform obj, Transform new_parent)
-    {
-        if (obj.transform.parent != new_parent)
-        {
-            Vector3 pos = obj.transform.position;
-            obj.transform.parent = new_parent;
-            obj.transform.position = pos;
-        }
-    }
-    // Update is called once per frame
-    void Update()
-    {
+        //
+        groundSource = gameObject.AddComponent<AudioSource>();
 
+        //
     }
+
+    void Awake()
+    {
+        currentRabit = this;
+    }
+
     void FixedUpdate()
     {
-        float val = Input.GetAxis("Horizontal");
-        SpriteRenderer spr = GetComponent<SpriteRenderer>();
         Animator animator = GetComponent<Animator>();
-        if (Mathf.Abs(val) > 0)
+        Vector3 from = transform.position + Vector3.up * 0.3f;
+        Vector3 to = transform.position + Vector3.down * 0.1f;
+        int layer_id = 1 << LayerMask.NameToLayer("Ground");
+        RaycastHit2D hit = Physics2D.Linecast(from, to, layer_id);
+
+        if (hit)
+        {
+            if (hit.transform != null && hit.transform.GetComponent<MovingPlatform>() != null)
+            {
+                SetNewParent(this.transform, hit.transform);
+            }
+            else
+            {
+                SetNewParent(this.transform, this.rabitParent);
+            }
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
+        }
+        
+        Debug.DrawLine(from, to, Color.red);
+        if (Input.GetButtonDown("Jump") && isGrounded)
+        {
+            this.jumpActive = true;
+        }
+        if (this.jumpActive)
+        {
+            
+            if (Input.GetButton("Jump"))
+            {
+                this.JumpTime += Time.deltaTime;
+                if (this.JumpTime < this.maxJumpTime)
+                {
+                    Vector2 vel = body.velocity;
+                    vel.y = jumpSpeed * (1.0f - JumpTime / maxJumpTime);
+                    body.velocity = vel;
+                }
+            }
+            else
+            {
+                this.jumpActive = false;
+                this.JumpTime = 0;
+            }
+        }
+
+        if (this.isGrounded)
+        {
+            animator.SetBool("jump", false);
+        }
+        else
+        {
+            animator.SetBool("jump", true);
+        }
+
+        float value = Input.GetAxis("Horizontal");
+        SpriteRenderer spr = GetComponent<SpriteRenderer>();
+
+        if (Mathf.Abs(value) > 0)
         {
             Vector2 vec2 = body.velocity;
-            vec2.x = val * speed;
+            vec2.x = value * speed;
             body.velocity = vec2;
             animator.SetBool("run", true);
         }
@@ -344,100 +128,29 @@ public class HeroRabit : MonoBehaviour
         {
             animator.SetBool("run", false);
         }
-        if (val < 0)
+        if (value < 0)
         {
             spr.flipX = true;
         }
-        else if (val > 0)
+        else if (value > 0)
         {
             spr.flipX = false;
         }
-        Vector3 from = transform.position + Vector3.up * 0.3f;
-        Vector3 to = transform.position + Vector3.down * 0.1f;
-        int layer_id = 1 << LayerMask.NameToLayer("Ground");
-        //Перевіряємо чи проходить лінія через Collider з шаром Ground
-        RaycastHit2D hit = Physics2D.Linecast(from, to, layer_id);
-        if (hit)
-        {
-            if (hit.transform != null && hit.transform.GetComponent<MovingPlatform>() != null)
-            {
-                SetNewParent(this.transform, hit.transform);
-            }
-            else
-            {
-                SetNewParent(this.transform, this.RabbitParent);
-            }
-            isGrounded = true;
-        }
-        else
-        {
-            isGrounded = false;
-        }
-        //Намалювати лінію (для розробника)
-        Debug.DrawLine(from, to, Color.red);
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            this.JumpActive = true;
-        }
-        if (this.JumpActive)
-        {
-            //Якщо кнопку ще тримають
-            if (Input.GetButton("Jump"))
-            {
-                this.JumpTime += Time.deltaTime;
-                if (this.JumpTime < this.MaxJumpTime)
-                {
-                    Vector2 vel = body.velocity;
-                    vel.y = JumpSpeed * (1.0f - JumpTime / MaxJumpTime);
-                    body.velocity = vel;
-                }
-            }
-            else
-            {
-                this.JumpActive = false;
-                this.JumpTime = 0;
-            }
-        }
-        if (this.isGrounded)
-        {
-            animator.SetBool("jump", false);
-        }
-        else
-        {
-            animator.SetBool("jump", true);
-        }
-    }
-    public void addHealth(int number)
-    {
-        this.health += number;
-        if (this.health > MaxHealth)
-            this.health = MaxHealth;
-        this.onHealthChange();
+
     }
 
-    public void removeHealth(int number)
+    public void bombTouch()
     {
-        this.health -= number;
-        if (this.health < 0)
-            this.health = 0;
-        this.onHealthChange();
-    }
-
-    public void onHealthChange()
-    {
-        if (this.health == 1)
+        if (isSuper)
         {
-            this.transform.localScale = Vector3.one;
-        }
-        else if (this.health == 2)
-        {
-            this.transform.localScale = Vector3.one * 2;
-            isSuper = true;
-        }
-        else if (this.health == 0)
-        {
-            LevelController.current.onRabitDeath(this);
+            transform.localScale += new Vector3(-0.4f, -0.4f, 0);
             isSuper = false;
+        }
+        else
+        {
+            animator.SetBool("death", true);
+            LevelController.current.onRabitDeath(this);
+            animator.SetBool("death", false);
         }
     }
 
@@ -446,24 +159,89 @@ public class HeroRabit : MonoBehaviour
         if (!isSuper)
         {
             isSuper = true;
-            transform.localScale += new Vector3(0.5f, 0.5f, 0);
+            transform.localScale += new Vector3(0.4f, 0.4f, 0);
         }
     }
 
-    public void BombTouch()
+    public void healthChanging()
     {
-        Animator animator = GetComponent<Animator>();
-        if (isSuper)
-        {
-            isSuper = false;
-            transform.localScale += new Vector3(-0.5F, -0.5f, 0);
-        }
-        else
+        if (this.health == 0)
         {
             animator.SetBool("death", true);
             LevelController.current.onRabitDeath(this);
+            isSuper = false;
             animator.SetBool("death", false);
-
         }
+        else if (this.health == 1)
+        {
+            this.transform.localScale = Vector3.one;
+        }
+        else if (this.health == 2)
+        {
+            this.transform.localScale = Vector3.one * 2;
+            isSuper = true;
+        }
+    }
+
+    public void addHealth(int num)
+    {
+        this.health += num;
+        if (this.health > maxHealth)
+            this.health = maxHealth;
+        this.healthChanging();
+    }
+
+    public void removeHealth(int number)
+    {
+        this.health -= number;
+        if (this.health < 0)
+            this.health = 0;
+        this.healthChanging();
+    }
+
+    public Vector3 btnLft()
+    {
+        BoxCollider2D boxcol = this.GetComponent<BoxCollider2D>();
+
+        Vector3 world = transform.TransformPoint(boxcol.offset);
+        float rbot = world.y - (boxcol.size.y / 2f);
+        float rlef = world.x - (boxcol.size.x / 2f);
+
+        return new Vector3(rlef, rbot, 0f);
+    }
+
+    public void deadRabit()
+    {
+        if (!isRabitDie)
+            StartCoroutine(rebirthLater());
+    }
+
+    IEnumerator rebirthLater()
+    {
+        healthChanging();
+        Animator animator = GetComponent<Animator>();
+        animator.SetBool("die", true);
+        isRabitDie = true;
+
+        yield return new WaitForSeconds(2f);
+
+        if (checkLife())
+        {
+            isRabitDie = false;
+            isSuper = false;
+            animator.SetBool("die", false);
+            this.transform.localScale = this.transform.localScale;
+            LevelController.current.onRabitDeath(this);
+        }
+    }
+
+    public bool checkLife()
+    {
+        if (health < 1)
+        {
+           // SceneManager.LoadScene("LevelMenu");
+            return false;
+        }
+        return true;
     }
 }

@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Bomb : Collectable
 {
-    protected override void OnRabitHit(HeroRabit rabit)
+    protected override void hitting(HeroRabit rabit)
     {
         this.CollectedHide();
-        rabit.BombTouch();
+        rabit.bombTouch();
     }
 
 }

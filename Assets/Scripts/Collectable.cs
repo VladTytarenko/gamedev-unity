@@ -4,17 +4,15 @@ using UnityEngine;
 
 public class Collectable : MonoBehaviour
 {
+    protected virtual void hitting(HeroRabit rabit){}
 
-    protected virtual void OnRabitHit(HeroRabit rabit)
-    {
-    }
     void OnTriggerEnter2D(Collider2D collider)
     {
 
         HeroRabit rabit = collider.GetComponent<HeroRabit>();
         if (rabit != null)
         {
-            this.OnRabitHit(rabit);
+            this.hitting(rabit);
         }
 
     }
