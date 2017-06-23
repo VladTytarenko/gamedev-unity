@@ -19,6 +19,7 @@ public class HeroRabit : MonoBehaviour
     bool isRabitDie = false;
     bool isSuper = false;
     int health = 1;
+    int lifes = 3;
 
     //
     public AudioClip groundSound;
@@ -218,6 +219,7 @@ public class HeroRabit : MonoBehaviour
 
     IEnumerator rebirthLater()
     {
+        //removeLifes();
         healthChanging();
         Animator animator = GetComponent<Animator>();
         animator.SetBool("die", true);
@@ -233,6 +235,17 @@ public class HeroRabit : MonoBehaviour
             this.transform.localScale = this.transform.localScale;
             LevelController.current.onRabitDeath(this);
         }
+    }
+
+    public void removeLifes()
+    {
+        if (lifes == 3)
+            Life3.life.loseLife();
+        else if (lifes == 2)
+            Life2.life.loseLife();
+        else if (lifes == 1)
+            Life1.life.loseLife();
+        lifes--;
     }
 
     public bool checkLife()

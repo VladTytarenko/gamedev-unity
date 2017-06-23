@@ -7,7 +7,8 @@ public class Coins : Collectable
 
     protected override void hitting(HeroRabit rabit)
     {
-        LevelController.current.addCoins(1);
+        //LevelController.current.addCoins(1);
+        CoinsQuantity.coins.labelText(LevelController.current.addCoins(1));
         this.CollectedHide();
     }
 }

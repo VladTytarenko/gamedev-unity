@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4747157909124516}
   - component: {fileID: 212435799757060150}
   - component: {fileID: 114554741439623676}
-  - component: {fileID: 68849827900187168}
+  - component: {fileID: 61425079463736164}
   m_Layer: 0
   m_Name: Fruit-3
   m_TagString: Untagged
@@ -42,8 +42,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!68 &68849827900187168
-EdgeCollider2D:
+--- !u!61 &61425079463736164
+BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -55,10 +55,18 @@ EdgeCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.72, y: 0.96}
+    newSize: {x: 0.72, y: 0.96}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.72, y: 0.96}
   m_EdgeRadius: 0
-  m_Points:
-  - {x: -0.36, y: 0}
-  - {x: 0.36, y: 0}
 --- !u!114 &114554741439623676
 MonoBehaviour:
   m_ObjectHideFlags: 1
