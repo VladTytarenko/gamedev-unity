@@ -7,25 +7,12 @@ public class Door : MonoBehaviour
 {
 
     public string level = "LevelMenu";
-
-    public string openLevel = "isOpenAlsway";
-
-    public GameObject lockObj;
-    public GameObject crystObj;
-    public GameObject fruitObj;
-
+    public string openLevel = "isOpen";
+    public GameObject lockObj, crystObj, fruitObj;
     LevelInfo stats;
-
     bool isOpen = false;
 
     void Start()
-    {
-        setStats();
-        setIsLocked();
-        showAtributes();
-    }
-
-    void setStats()
     {
         string str = PlayerPrefs.GetString(level);
         stats = JsonUtility.FromJson<LevelInfo>(str);
@@ -33,27 +20,24 @@ public class Door : MonoBehaviour
         {
             stats = new LevelInfo();
         }
-    }
-
-    void setIsLocked()
-    {
-        string str = PlayerPrefs.GetString(openLevel);
-        LevelInfo openLevelStats = JsonUtility.FromJson<LevelInfo>(str);
+       
+        string str2 = PlayerPrefs.GetString(openLevel);
+        LevelInfo openLevelStats = JsonUtility.FromJson<LevelInfo>(str2);
         if (openLevelStats == null)
         {
             openLevelStats = new LevelInfo();
         }
         isOpen = openLevelStats.levelFinish;
 
-        if (openLevel == "isOpenAlsway")
+        if (openLevel == "isOpen")
             isOpen = true;
-    }
 
-    void showAtributes()
-    {
-        if (stats.levelFinish) Destroy(lockObj);
-        if (!stats.crystals) Destroy(crystObj);
-        if (!stats.fruits) Destroy(fruitObj);
+        if (stats.levelFinish) 
+            Destroy(lockObj);
+        if (!stats.crystals) 
+            Destroy(crystObj);
+        if (!stats.fruits) 
+            Destroy(fruitObj);
     }
 
     void OnTriggerEnter2D(Collider2D collider)

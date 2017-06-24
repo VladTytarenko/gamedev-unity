@@ -250,9 +250,9 @@ public class HeroRabit : MonoBehaviour
 
     public bool checkLife()
     {
-        if (health < 1)
+        if (lifes < 1)
         {
-           // SceneManager.LoadScene("LevelMenu");
+            SceneManager.LoadScene("LevelMenu");
             return false;
         }
         return true;
