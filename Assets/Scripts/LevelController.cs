@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class LevelController : MonoBehaviour {
@@ -9,7 +10,7 @@ public class LevelController : MonoBehaviour {
     private int fruitsQuantity = 0;
     private int coins = 0;
 
-    bool[] crystals = new bool[3];
+    public static bool[] crystals = new bool[3];
 
     void Awake()
     {
@@ -43,4 +44,33 @@ public class LevelController : MonoBehaviour {
         crystals[number - 1] = true;
         return number;
     }
+
+    public int getFruits()
+    {
+        return fruitsQuantity;
+    }
+
+    public int getCoins()
+    {
+        return coins;
+    }
+
+    public bool hasCrystal(int n)
+    {
+        return crystals[n];
+    }
+
+    public void saveCoins()
+    {
+        int globalCoins = PlayerPrefs.GetInt("coins");
+        globalCoins += coins;
+
+        PlayerPrefs.SetInt("coins", globalCoins);
+    }
+
+    public bool[] getCrystalArr()
+    {
+        return crystals;
+    }
+
 }

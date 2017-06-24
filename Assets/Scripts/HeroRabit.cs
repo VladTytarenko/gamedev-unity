@@ -21,6 +21,8 @@ public class HeroRabit : MonoBehaviour
     int health = 1;
     int lifes = 3;
 
+    LevelInfo stat = new LevelInfo();
+
     //
     public AudioClip groundSound;
     AudioSource groundSource;
@@ -217,6 +219,11 @@ public class HeroRabit : MonoBehaviour
             StartCoroutine(rebirthLater());
     }
 
+    public bool isRabitDied()
+    {
+        return isRabitDie;
+    }
+
     IEnumerator rebirthLater()
     {
         //removeLifes();
@@ -256,5 +263,33 @@ public class HeroRabit : MonoBehaviour
             return false;
         }
         return true;
+    }
+
+    public void saveStats()
+    {
+        string level = SceneManager.GetActiveScene().name;
+
+        string lastLevelStr = PlayerPrefs.GetString(level);
+        LevelInfo lastStats = JsonUtility.FromJson<LevelInfo>(lastLevelStr);
+        if (lastStats == null)
+        {
+            lastStats = new LevelInfo();
+        }
+
+        if (FruitsCount.max == LevelController.current.getFruits())
+            stat.fruits = (true || lastStats.fruits);
+
+        bool hasCrystals = true;
+        for (int i = 0; i < LevelController.current.getCrystalArr().Length && hasCrystals; i++)
+        {
+            if (!LevelController.current.getCrystalArr()[i]) hasCrystals = false;
+        }
+        stat.crystals = (hasCrystals || lastStats.crystals);
+
+        if (!isRabitDie)
+            stat.levelFinish = (true || lastStats.levelFinish);
+
+        string str = JsonUtility.ToJson(stat);
+        PlayerPrefs.SetString(level, str);
     }
 }

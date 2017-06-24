@@ -5,7 +5,7 @@ using UnityEngine;
 public class FruitsCount : MonoBehaviour {
 
     public static FruitsCount count;
-    public int max = 0;
+    public static int max = 0;
     UILabel label;
 
 	void Start () {
@@ -19,4 +19,5 @@ public class FruitsCount : MonoBehaviour {
         label.text = number + "/" + max;
     }
 	
+   
 }
